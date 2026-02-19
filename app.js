@@ -99,7 +99,10 @@ app.use((req,res,next)=>{
     next();
 })
 
-app.use("/", userRouter);
+app.get("/", (req, res) => {
+  res.render("listings/index");
+});
+
 app.use("/listings", listingRouter);
 app.use("/listings/:id/reviews", reviewRouter);
 
