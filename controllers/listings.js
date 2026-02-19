@@ -111,12 +111,45 @@ module.exports.updateListing = async (req, res) => {
   let { id } = req.params;
   let listing = await Listing.findByIdAndUpdate(id, { ...req.body.listing });
 
+  if (req.body.listing.location) {
+    async function locateCity(cityName) {
+      const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
+        cityName
+      )}`;
+      const response = await fetch(url, {
+        headers: { "User-Agent": "MyLeafletApp/1.0 (example@gmail.com)" },
+      });
+      const data = await response.json();
+
+      if (data.length === 0) {
+        console.log("City not found!");
+        return null;
+      }
+
+      const lat = parseFloat(data[0].lat);
+      const lon = parseFloat(data[0].lon);
+
+      console.log("Latitude:", lat, "Longitude:", lon);
+      return { lat, lon };
+    }
+
+    const coordinates = await locateCity(req.body.listing.location);
+
+    if (coordinates) {
+      listing.geometry = {
+        type: "Point",
+        coordinates: [coordinates.lon, coordinates.lat],
+      };
+    }
+  }
+
   if (typeof req.file !== "undefined") {
     let url = req.file.path;
     let filename = req.file.filename;
     listing.image = { url, filename };
-    await listing.save();
   }
+
+  await listing.save();
 
   req.flash("success", "Listing updated successfully");
   return res.redirect(`/listings/${id}`);

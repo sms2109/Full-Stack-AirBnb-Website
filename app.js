@@ -10,14 +10,16 @@ const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
 const ExpressError = require("./utils/ExpressError.js");
 const listingRouter = require("./routes/listing.js");
-const reviewRouter = require("./routes/reveiw.js");
+const reviewRouter = require("./routes/review.js");
 const userRouter = require("./routes/user.js");
 const session = require("express-session");
 const MongoStore = require('connect-mongo');
 const flash = require('connect-flash');
 const passport = require("passport");
-const LocalStrategy = require("passport-local");
+const LocalStrategy = require("passport-local").Strategy;
+const bcrypt = require("bcrypt");
 const User = require("./models/user.js");
+
 
 const dbUrl = process.env.ATLASDB_URL;
 // const mongo_url = "mongodb://127.0.0.1:27017/wanderlust";
@@ -48,6 +50,7 @@ const store = MongoStore.create({
 store.on("error",(err)=>{
   console.log("erorr in mongo session store",err);
 })
+
 const sessionOptions = {
   store,
   secret: process.env.SECRET,
@@ -65,9 +68,28 @@ app.use(flash());
 
 app.use(passport.initialize());
 app.use(passport.session());
-passport.use(new LocalStrategy(User.authenticate())); // use static authenticate method of model in LocalStrategy
-passport.serializeUser(User.serializeUser());// use static serialize and deserialize of model for passport session support
-passport.deserializeUser(User.deserializeUser());
+
+passport.use(new LocalStrategy(async (username, password, done) => {
+  try {
+    const user = await User.findOne({ username });
+    if (!user) return done(null, false, { message: 'Incorrect username.' });
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) return done(null, false, { message: 'Incorrect password.' });
+    return done(null, user);
+  } catch (err) {
+    return done(err);
+  }
+}));
+
+passport.serializeUser((user, done) => done(null, user.id));
+passport.deserializeUser(async (id, done) => {
+  try {
+    const user = await User.findById(id);
+    done(null, user);
+  } catch (err) {
+    done(err);
+  }
+});
 
 app.use((req,res,next)=>{
     res.locals.successMsg = req.flash("success");
@@ -77,37 +99,22 @@ app.use((req,res,next)=>{
     next();
 })
 
-app.get("/demouser",async(req,res)=>{
-  let fakeUser = new User({
-    email:"student@gamil.com",
-    username:"mbm-student",
-  });
-
-  let registeredUser = await User.register(fakeUser,"mypassword");
-  res.send(registeredUser);
-})
-
-
+app.use("/", userRouter);
 app.use("/listings", listingRouter);
 app.use("/listings/:id/reviews", reviewRouter);
-app.use("/", userRouter);
 
-// app.use((req, res, next) => {
-//   next(new ExpressError(404, "Page Not Found"));
-// });
+
+// app.use((req,res,next) => {
+//     next(new ExpressError(404, "Page Not Found"));
+// })
 
 app.use((err, req, res, next) => {
-  console.log(" ERROR LOCATION:", err);   
-
-  if (res.headersSent) {
-    return next(err);   
-  }
-
-  let { statusCode = 500 } = err;
-  return res.status(statusCode).render("listings/error.ejs", { err });
+  // res.send("something was wrong");
+  let { statusCode = 500, message = "something was wrong" } = err;
+  res.status(statusCode).render("listings/error.ejs", { err });
+  //  res.status(statusCode).send(message);
 });
 
-
-app.listen(8080, (req, res) => {
-  console.log("server is listening on port 8080 ");
+app.listen(8000, (req, res) => {
+  console.log("server is listening on port 8000 ");
 });

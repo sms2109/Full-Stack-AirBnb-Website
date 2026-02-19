@@ -5,24 +5,22 @@ const wrapAsync = require("../utils/wrapAsync");
 const passport = require("passport");
 const { saveRedirectUrl } = require("../middleware.js");
 const userController = require("../controllers/users.js");
-const user = require("../models/user.js");
 
-router
-  .route("/signup")
-  .get(userController.renderSignupForm)
-  .post(wrapAsync(userController.showSignupForm));
+router.get("/signup", userController.renderSignupForm);
 
-router
-  .route("/login")
-  .get(userController.renderLoginForm)
-  .post(
-    saveRedirectUrl,
-    passport.authenticate("local", {
-      failureRedirect: "/login",
-      failureFlash: true,
-    }),
-    userController.showLoginForm
-  );
+router.post("/signup", wrapAsync(userController.showSignupForm));
+
+router.get("/login", userController.renderLoginForm);
+
+router.post(
+  "/login",
+  saveRedirectUrl,
+  passport.authenticate("local", {
+    failureRedirect: "/login",
+    failureFlash: true,
+  }),
+  userController.showLoginForm
+);
 
 router.get("/logout", userController.logout);
 

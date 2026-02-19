@@ -12,18 +12,24 @@
     />
     <div class="card-body">
       <p class="card-text">
-        <i>Owned by : <b><%= listing.owner.username %></b></i
-        ><br />
+        <i>
+          Owned by :
+          <b>
+            <%= listing.owner ? listing.owner.username : "Unknown User" %>
+          </b>
+        </i>
+        <br />
         <%= listing.description %><br />
-        &#8377;<%= listing.price ?listing.price.toLocaleString("en-IN") : 'N/A'
-        %><br />
+        &#8377;<%= listing.price ?listing.price.toLocaleString("en-IN") :
+        'N/A'%>
+        <br />
         <%= listing.location %><br />
         <%= listing.country %>
       </p>
     </div>
   </div>
 
-  <% if(currUser && currUser._id.equals(listing.owner._id)){ %>
+  <% if(currUser && currUser._id && listing.owner && currUser._id.equals(listing.owner._id)){ %>
   <div class="btns mb-3">
     <a
       href="/listings/<%= listing._id %>/edit"
