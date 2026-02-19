@@ -100,7 +100,7 @@ app.use((req,res,next)=>{
 })
 
 app.get("/", (req, res) => {
-  res.render("listings/index");
+  res.redirect("/listings");
 });
 
 app.use("/", userRouter);      
