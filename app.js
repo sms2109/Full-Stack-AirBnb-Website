@@ -103,6 +103,7 @@ app.get("/", (req, res) => {
   res.render("listings/index");
 });
 
+app.use("/", userRouter);      
 app.use("/listings", listingRouter);
 app.use("/listings/:id/reviews", reviewRouter);
 
@@ -114,7 +115,10 @@ app.use("/listings/:id/reviews", reviewRouter);
 app.use((err, req, res, next) => {
   // res.send("something was wrong");
   let { statusCode = 500, message = "something was wrong" } = err;
-  res.status(statusCode).render("listings/error.ejs", { err });
+  res.status(statusCode).render("listings/error.ejs", { 
+  err,
+  allListings: []   // prevent crash
+ });
   //  res.status(statusCode).send(message);
 });
 
