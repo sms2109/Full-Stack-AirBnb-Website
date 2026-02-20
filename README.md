@@ -44,7 +44,7 @@ Users can create listings, upload images, leave reviews, and explore properties 
 
 ## 📁 Project Structure
 
-
+```
 Full-Stack-Airbnb/
 │
 ├── controllers/              # Route controller logic
@@ -87,4 +87,4 @@ Full-Stack-Airbnb/
 ├── .gitignore
 ├── package.json
 └── package-lock.json
-
+```
