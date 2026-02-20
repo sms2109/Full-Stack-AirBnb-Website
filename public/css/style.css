@@ -2,11 +2,54 @@ body {
   font-family: "Plus Jakarta Sans", sans-serif !important;
   display: flex;
   flex-direction: column;
-  min-width: 100vh;
+  min-height: 100vh;
+  background-color: #f8f9fa;
+  color: #333;
+  animation: fadeIn 1s ease-in;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* listing title */
+.listing-title {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #333;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+  animation: fadeInDown 0.5s ease-out;
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 .navbar {
   height: 5rem;
   background-color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  animation: slideDown 0.5s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 .fa-airbnb {
   color: #ff385c;
@@ -23,26 +66,31 @@ footer {
   bottom: 0;
   width: 100%;
   z-index: 1000;
-  background-color: white;
-  border-top: 1px solid #ddd;
-  padding: 1rem; 
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-top: none;
+  padding: 2rem 1rem;
+  box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+  text-align: center;
 }
 
 .main {
-  background-color: white;
+  background: transparent;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 1rem;
+  gap: 2rem;
+  flex-wrap: wrap;
 }
 .right {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   gap: 1rem;
 }
 .left {
   display: flex;
+  flex-direction: column;
   align-items: center;
   gap: 1rem;
 }
@@ -53,33 +101,54 @@ footer {
   display: flex;
   margin-top: 0;
   gap: 2rem;
+  list-style: none;
+  padding: 0;
 }
 .f-info-links ul li a {
   text-decoration: none;
-  color: black;
+  color: white;
+  transition: color 0.3s ease;
 }
 .f-info-links ul li a:hover {
+  color: #ff385c;
   text-decoration: underline;
 }
 .f-info {
   display: flex;
   gap: 1rem;
+  align-items: center;
 }
 .f-info a {
   margin-right: 1rem;
   text-decoration: none;
-  color: black;
+  color: white;
+  transition: color 0.3s ease;
+}
+.f-info a:hover {
+  color: #ff385c;
 }
 .f-info i {
   margin-top: 0.25rem;
   cursor: pointer;
+  color: white;
 }
 .lan {
   cursor: pointer;
+  color: white;
 }
 .f-info-socials i {
   margin-right: 1rem;
   cursor: pointer;
+  color: white;
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+.f-info-socials i:hover {
+  color: #ff385c;
+  transform: scale(1.2);
+}
+.f-info-brand {
+  font-weight: bold;
+  color: white;
 }
 
 /* Responsive Footer - Keep Horizontal */
@@ -143,14 +212,29 @@ footer {
 
 @media (max-width: 480px) {
   footer {
-    padding: 0.5rem 0.25rem;
+    padding: 1rem 0.25rem;
   }
 
   .main {
-    gap: 0.15rem;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .left {
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .right {
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
   }
 
   .f-info-links ul {
+    flex-direction: column;
     gap: 0.5rem;
   }
 
@@ -187,15 +271,57 @@ footer {
 .container {
   margin-top: 1rem;
   flex: 1;
+  background-color: white;
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  margin-bottom: 2rem;
+}
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
+    margin: 0.5rem;
+    margin-bottom: 2rem;
+  }
 }
 .listing-card {
   border: none !important;
   margin-bottom: 2rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border-radius: 1rem;
+  animation: slideUp 0.5s ease-out;
+}
+.listing-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 .card-img-top {
   border-radius: 1rem !important;
   width: 100% !important;
   object-fit: cover !important;
+  height: 20rem;
+}
+@media (max-width: 768px) {
+  .card-img-top {
+    height: 15rem;
+  }
+}
+@media (max-width: 480px) {
+  .card-img-top {
+    height: 12rem;
+  }
 }
 .card-body {
   padding: 0 !important;
@@ -232,4 +358,38 @@ footer {
 
 #map{
   height: 380px;
+  border-radius: 1rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* reviews */
+.review-card {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  color: white;
+  border: none;
+  border-radius: 1rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.review-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+.review-card .card-body {
+  padding: 1.5rem;
+}
+.review-card .card-title {
+  color: white;
+  font-weight: bold;
+}
+.review-card .card-text {
+  color: white;
+}
+.review-card .btn {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 1px solid white;
+  transition: background-color 0.3s ease;
+}
+.review-card .btn:hover {
+  background-color: rgba(255, 255, 255, 0.3);
 }
